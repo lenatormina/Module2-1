@@ -1,49 +1,80 @@
 import React from 'react';
-import logo from './logo.svg';
+import styles from './app.module.css';
 import './App.css';
+import { useState } from 'react';
 
-// Императивный стиль
-const date = new Date();
-
-// Декларативный стиль
 export const App = () => {
-	const appElement = React.createElement(
-		'div',
-		{ className: 'App' },
-		React.createElement(
-			'header',
-			{ className: 'App-header' },
-			React.createElement('img', { src: logo, className: 'App-logo', alt: 'logo' }),
-			// Создаем p-элемент
-			React.createElement(
-				'p',
-				null,
-				'Edit ',
-				React.createElement('code', null, 'src/App.js'),
-				' and save to reload.',
-			),
-			// Создаем a-элемент
-			React.createElement(
-				'a',
-				{
-					className: 'App-link',
-					href: 'https://reactjs.org',
-					target: '_blank',
-					rel: 'noopener noreferrer',
-				},
-				'Learn React',
-			),
-			// Создаем div-элемент для отображения текущего года
-			React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'span',
-					{ id: 'Year' },
-					React.createElement('code', null, date.getFullYear()),
-				),
-			),
-		),
+	// для ввода значения
+	const [value, setValue] = useState('');
+	// для элементов списка
+	const [list, setList] = useState([]);
+	// для текста ошибки
+	const [error, setError] = useState('');
+
+	const [isValueValid, setisValueValid] = useState(true);
+
+	const onInputButtonClick = () => {
+		let promptValue = prompt('Введите значение');
+		if (promptValue === null) {
+			return; // пользователь нажал "Отмена"
+		}
+		if (promptValue.length < 3) {
+			setError('Введенное значение должно содержать минимум 3 символа');
+			setisValueValid(false);
+			return;
+		} else {
+			setValue(promptValue);
+			setError('');
+			setisValueValid(true);
+		}
+	};
+
+	const onAddButtonClick = () => {
+		if (isValueValid && value) {
+			const id = Date.now();
+			const updateList = [...list, { id, value }];
+			setList(updateList);
+			setValue('');
+			setError('');
+		}
+	};
+
+	return (
+		<div className={styles.app}>
+			<h1 className={styles['page-heading']}>Ввод значения</h1>
+			<p className={styles['no-margin-text']}>
+				Текущее значение <code>value</code>: "
+				<output className={styles['current-value']}>{value}</output>"
+			</p>
+			{error && <div className={styles['error']}>{error}</div>}
+			<div className={styles['buttons-container']}>
+				<button onClick={onInputButtonClick} className={styles.button}>
+					Ввести новое
+				</button>
+				<button
+					onClick={onAddButtonClick}
+					className={styles.button}
+					disabled={!isValueValid}
+				>
+					Добавить в список
+				</button>
+			</div>
+			<div className={styles['list-container']}>
+				<h2 className={styles['list-heading']}>Список:</h2>
+				{list.length === 0 ? (
+					<p className={styles['no-margin-text']}>Нет добавленных элементов</p>
+				) : (
+					<ul className={styles.list}>
+						{list.map(({ id, value }) => (
+							<li key={id} className={styles['list-item']}>
+								{value}
+								<br />
+								(Дата добавления: {new Date().toLocaleString()})
+							</li>
+						))}
+					</ul>
+				)}
+			</div>
+		</div>
 	);
-	return appElement;
 };
