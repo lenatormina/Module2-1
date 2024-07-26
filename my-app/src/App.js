@@ -21,6 +21,7 @@ export const App = () => {
 		if (promptValue.length < 3) {
 			setError('Введенное значение должно содержать минимум 3 символа');
 			setisValueValid(false);
+			setValue('');
 			return;
 		} else {
 			setValue(promptValue);
