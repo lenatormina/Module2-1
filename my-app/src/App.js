@@ -33,7 +33,7 @@ export const App = () => {
 	const onAddButtonClick = () => {
 		if (isValueValid && value) {
 			const id = Date.now();
-			const updateList = [...list, { id, value }];
+			const updateList = [...list, { id, value, date: new Date() }];
 			setList(updateList);
 			setValue('');
 			setError('');
@@ -66,11 +66,11 @@ export const App = () => {
 					<p className={styles['no-margin-text']}>Нет добавленных элементов</p>
 				) : (
 					<ul className={styles.list}>
-						{list.map(({ id, value }) => (
+						{list.map(({ id, value, date }) => (
 							<li key={id} className={styles['list-item']}>
 								{value}
 								<br />
-								(Дата добавления: {new Date().toLocaleString()})
+								(Дата добавления: {date.toLocaleString()})
 							</li>
 						))}
 					</ul>
